@@ -1,0 +1,91 @@
+---
+title: "Unsupervised ML"
+output: pdf_document
+date: "2024-03-11"
+---
+
+
+## R Markdown
+This is a practice exercise on unsupervised methods such as dimentionality reduction and clustering. Principal component analysis (PCA) will be used on the iris dataset and k-means clustering. 
+
+Background on data set: The Iris dataset is a famous dataset in the field of statistics and machine learning. It was introduced by the British statistician and biologist Ronald Fisher in his 1936 paper "The use of multiple measurements in taxonomic problems" as an example of discriminant analysis. The dataset consists of measurements of various features of iris flowers belonging to three species: Setosa, Versicolor, and Virginica. The features measured include the lengths and widths of the sepals and petals.
+The dataset contains 150 observations, with 50 samples from each of the three specie
+
+
+```{r cars}
+# Load the iris dataset
+data(iris)
+
+# Display the structure of the dataset
+str(iris)
+
+# Display the first few rows of the dataset
+head(iris)
+
+# Summary statistics of the dataset
+summary(iris)
+
+```
+
+```{r}
+# Extracting features (predictors)
+iris_features <- iris[, 1:4]
+
+# Standardize the features
+scaled_features <- scale(iris_features)
+
+# Perform PCA
+pca_result <- prcomp(scaled_features, scale. = TRUE)
+
+# Summary of PCA
+summary(pca_result)
+
+# Screen plot to visualize the variance explained by each principal component
+plot(pca_result, type = "l", main = "Scree Plot")
+
+```
+Interpretation of PCA results
+the plot shows the amount of variance (y-axis) captured by each principal component. 
+
+PC1 captures approximately 72.96% of the total variance.
+PC2 captures approximately 22.85% of the total variance.
+PC3 captures approximately 3.67% of the total variance.
+PC4 captures approximately 0.52% of the total variance.
+
+The cumulative proportion indicates that the first two principal components (PC1 and PC2) together capture approximately 95.81% of the total variance, while the first three principal components capture approximately 99.48%. This suggests that the first two principal components are sufficient to capture the majority of the variability in the data.
+
+
+```{r}
+# Starting with 2 clusters
+# Extract the scores of the principal components
+pc_scores <- as.data.frame(pca_result$x)
+
+# Perform clustering (e.g., k-means clustering)
+library(cluster)
+set.seed(123)  # for reproducibility
+k <- 2 # number of clusters
+kmeans_result <- kmeans(pc_scores[, 1:2], centers = k)
+
+# Visualize the clustering results
+plot(pc_scores[, 1:2], col = kmeans_result$cluster, main = "K-means Clustering of Iris Dataset, k =2")
+points(kmeans_result$centers, col = 1:k, pch = 8, cex = 2)
+
+```
+
+```{r}
+# Changint to 2 clusters
+# Extract the scores of the principal components
+pc_scores <- as.data.frame(pca_result$x)
+
+# Perform clustering (e.g., k-means clustering)
+library(cluster)
+set.seed(123)  # for reproducibility
+k <- 3 # number of clusters
+kmeans_result <- kmeans(pc_scores[, 1:2], centers = k)
+
+# Visualize the clustering results
+plot(pc_scores[, 1:2], col = kmeans_result$cluster, main = "K-means Clustering of Iris Dataset, k =3")
+points(kmeans_result$centers, col = 1:k, pch = 8, cex = 2)
+
+```
+
